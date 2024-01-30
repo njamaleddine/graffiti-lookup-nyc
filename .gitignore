@@ -1,0 +1,16 @@
+.vscode/
+*.log
+*.pid
+*.pot
+*.pyc
+.env
+venv/
+.DS_Store
+__pycache__/
+.Python
+.installed.cfg
+*.egg-info/
+*.egg
+.coverage
+.cache
+coverage.xml
