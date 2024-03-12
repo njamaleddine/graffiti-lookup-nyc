@@ -20,13 +20,15 @@ parser.add_argument(
     "-L", "--ids", help="Comma separated list of graffiti service request ids"
 )
 parser.add_argument(
-    "-f", "--file-path", help="Comma separated list of graffiti service request ids"
+    "-f",
+    "--file-path",
+    help="The output file path for the requested graffiti service request records",
 )
 parser.add_argument(
     "-t",
     "--file-type",
     choices=SUPPORTED_FILE_TYPES,
-    help="Comma separated list of graffiti service request ids",
+    help="The output file type"
 )
 
 
