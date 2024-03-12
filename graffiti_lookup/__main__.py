@@ -37,7 +37,7 @@ if __name__ == "__main__":
     graffiti_lookup_service = GraffitiLookup()
     result = None
     file_path = args.file_path
-    file_type = args.file_type or file_path.split(".")[-1].lower()
+    file_type = args.file_type or (file_path and file_path.split(".")[-1].lower())
 
     if args.id:
         result = graffiti_lookup_service.get_status_by_id(args.id)
