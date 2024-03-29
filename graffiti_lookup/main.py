@@ -22,12 +22,6 @@ class GraffitiLookup:
     def __init__(self):
         self.client = httpx.AsyncClient()
 
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, *excinfo):
-        await self.client.aclose()
-
     @staticmethod
     def _convert_to_snake_case(text=""):
         return "_".join(text.split()).lower()
