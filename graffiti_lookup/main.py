@@ -14,15 +14,10 @@ class GraffitiLookup:
     NYC_GRAFFITI_LOOKUP_URL = (
         "https://a002-oomwap.nyc.gov/TagOnline/Shared/CannotRespond?sr="
     )
+    ID_FIELD = "service_request"
 
     def __init__(self):
         self.client = httpx.AsyncClient()
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, *excinfo):
-        await self.client.aclose()
 
     @staticmethod
     def _convert_to_snake_case(text=""):
@@ -35,9 +30,7 @@ class GraffitiLookup:
         return id
 
     async def _request(self, method, url, **kwargs):
-        return await self.client.request(
-            method, url, **kwargs
-        )
+        return await self.client.request(method, url, **kwargs)
 
     def _parse_record_from_html(self, html, id):
         parsed_html = BeautifulSoup(html, features="html.parser")
@@ -77,14 +70,25 @@ class GraffitiLookup:
 
         return record
 
-    async def get_status_by_id(self, id=""):
+    async def get_status_by_id(self, id="", close_connection=True):
         sanitized_id = self._sanitize_id(id)
-        response = await self._request("GET", f"{self.NYC_GRAFFITI_LOOKUP_URL}{sanitized_id}")
+        response = await self._request(
+            "GET", f"{self.NYC_GRAFFITI_LOOKUP_URL}{sanitized_id}"
+        )
+
+        if close_connection:
+            await self.client.aclose()
 
         if response.status_code == 200 and response.content:
             return self._parse_record_from_html(response.content, sanitized_id)
         return {}
 
     async def get_statuses_by_id(self, ids=[]):
-        tasks = [asyncio.create_task(self.get_status_by_id(id)) for id in ids]
-        return await asyncio.gather(*tasks)
+        tasks = [
+            asyncio.create_task(self.get_status_by_id(id, close_connection=False))
+            for id in ids
+        ]
+        responses = await asyncio.gather(*tasks)
+
+        await self.client.aclose()
+        return responses
