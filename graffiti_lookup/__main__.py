@@ -1,8 +1,8 @@
 import argparse
 import asyncio
 import csv
-import sys
 import json
+import sys
 
 from graffiti_lookup.main import GraffitiLookup
 
@@ -39,19 +39,30 @@ args = parser.parse_args()
 
 
 def read_file(file_path, file_type, result, fieldnames):
-    with open(file_path, "r") as file:
-        if file_type == "json":
-            return json.loads(file.read())
-        elif file_type == "csv":
-            csv_reader = csv.DictReader(file, fieldnames=fieldnames)
-            return [row for row in csv_reader][1:]
-        else:
-            sys.stderr.write(
-                f"Unsupported file-type {file_type} not in {SUPPORTED_FILE_TYPES}"
-            )
+    try:
+        with open(file_path, "r") as file:
+            if file_type == "json":
+                return json.loads(file.read())
+            elif file_type == "csv":
+                csv_reader = csv.DictReader(file, fieldnames=fieldnames)
+                return [row for row in csv_reader][1:]
+            else:
+                sys.stderr.write(
+                    f"Unsupported file-type {file_type} not in {SUPPORTED_FILE_TYPES}"
+                )
+    except FileNotFoundError:
+        pass
+    
+    return []
 
 
 def write_file(file_path, file_type, result, fieldnames):
+    if file_type not in SUPPORTED_FILE_TYPES:
+        sys.stderr.write(
+            f"Unsupported file-type {file_type} not in {SUPPORTED_FILE_TYPES}"
+        )
+        return
+    
     with open(file_path, "w") as file:
         if file_type == "json":
             file.write(json.dumps(result, indent=4))
@@ -62,10 +73,6 @@ def write_file(file_path, file_type, result, fieldnames):
                 csv_writer.writerows(result)
             else:
                 csv_writer.writerow(result)
-        else:
-            sys.stderr.write(
-                f"Unsupported file-type {file_type} not in {SUPPORTED_FILE_TYPES}"
-            )
 
 
 async def main():
@@ -97,7 +104,7 @@ async def main():
             result_map = {row.get(GraffitiLookup.ID_FIELD): row for row in result}
             all_results = {**file_result_map, **result_map}
             result = list(all_results.values())
-
+        
         write_file(file_path, file_type, result, fieldnames)
 
 
