@@ -28,7 +28,7 @@ parser.add_argument(
 parser.add_argument(
     "-m",
     "--merge-file",
-    action='store_true',
+    action="store_true",
     help="Merge graffiti request records with existing file",
 )
 parser.add_argument(
@@ -91,7 +91,9 @@ async def main():
     else:
         if args.merge_file:
             file_results = read_file(file_path, file_type, result, fieldnames)
-            file_result_map = {row.get(GraffitiLookup.ID_FIELD): row for row in file_results}
+            file_result_map = {
+                row.get(GraffitiLookup.ID_FIELD): row for row in file_results
+            }
             result_map = {row.get(GraffitiLookup.ID_FIELD): row for row in result}
             all_results = {**file_result_map, **result_map}
             result = list(all_results.values())
