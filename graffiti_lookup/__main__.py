@@ -1,4 +1,5 @@
 import argparse
+import asyncio
 import csv
 import sys
 import json
@@ -35,18 +36,18 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-if __name__ == "__main__":
+async def main():
     graffiti_lookup_service = GraffitiLookup()
     result = None
     file_path = args.file_path
     file_type = args.file_type or (file_path and file_path.split(".")[-1].lower())
 
     if args.id:
-        result = graffiti_lookup_service.get_status_by_id(args.id)
+        result = await graffiti_lookup_service.get_status_by_id(args.id)
 
     if args.ids:
         service_ids = args.ids.replace(" ", "").split(",")
-        result = graffiti_lookup_service.get_statuses_by_id(service_ids)
+        result = await graffiti_lookup_service.get_statuses_by_id(service_ids)
 
     try:
         fieldnames = result[0].keys() if args.ids else result.keys()
@@ -70,3 +71,7 @@ if __name__ == "__main__":
                 sys.stderr.write(
                     f"Unsupported file-type {file_type} not in {SUPPORTED_FILE_TYPES}"
                 )
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
