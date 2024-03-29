@@ -9,8 +9,6 @@ from graffiti_lookup.main import GraffitiLookup
 
 SUPPORTED_FILE_TYPES = ("csv", "json")
 
-parser = argparse.ArgumentParser()
-
 parser = argparse.ArgumentParser(description="Fetch NYC Graffiti Service Request")
 parser.add_argument(
     "-i",
@@ -52,7 +50,7 @@ def read_file(file_path, file_type, result, fieldnames):
                 )
     except FileNotFoundError:
         pass
-    
+
     return []
 
 
@@ -62,7 +60,7 @@ def write_file(file_path, file_type, result, fieldnames):
             f"Unsupported file-type {file_type} not in {SUPPORTED_FILE_TYPES}"
         )
         return
-    
+
     with open(file_path, "w") as file:
         if file_type == "json":
             file.write(json.dumps(result, indent=4))
@@ -104,7 +102,7 @@ async def main():
             result_map = {row.get(GraffitiLookup.ID_FIELD): row for row in result}
             all_results = {**file_result_map, **result_map}
             result = list(all_results.values())
-        
+
         write_file(file_path, file_type, result, fieldnames)
 
 
