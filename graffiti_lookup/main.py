@@ -4,6 +4,8 @@ import logging
 from bs4 import BeautifulSoup
 import httpx
 
+from graffiti_lookup.dataclasses import ServiceRequest
+
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +82,9 @@ class GraffitiLookup:
             await self.client.aclose()
 
         if response.status_code == 200 and response.content:
-            return self._parse_record_from_html(response.content, sanitized_id)
+            raw_record = self._parse_record_from_html(response.content, sanitized_id)
+            service_request = ServiceRequest(**raw_record)
+            return service_request.to_dict()
         return {}
 
     async def get_statuses_by_id(self, ids=[]):
