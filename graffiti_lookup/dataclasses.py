@@ -1,14 +1,18 @@
 from dataclasses import dataclass, fields
 from datetime import datetime
+from typing import ClassVar
 
 
 @dataclass
 class ServiceRequest:
+    """Graffiti Service Request"""
     service_request: str
     address: str
     created: datetime
     last_updated: datetime
     status: str
+
+    ID_FIELD: ClassVar[str] = "service_request"
 
     def __post_init__(self):
         self.created = datetime.strptime(self.created, "%m/%d/%Y")

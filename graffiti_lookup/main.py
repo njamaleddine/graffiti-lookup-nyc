@@ -16,7 +16,7 @@ class GraffitiLookup:
     NYC_GRAFFITI_LOOKUP_URL = (
         "https://a002-oomwap.nyc.gov/TagOnline/Shared/CannotRespond?sr="
     )
-    ID_FIELD = "service_request"
+    ID_FIELD = ServiceRequest.ID_FIELD
 
     def __init__(self):
         self.client = httpx.AsyncClient()
