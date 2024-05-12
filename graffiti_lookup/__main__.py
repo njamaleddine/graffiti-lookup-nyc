@@ -36,7 +36,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-def read_file(file_path, file_type, result, fieldnames):
+def read_file(file_path, file_type, fieldnames):
     try:
         with open(file_path, "r") as file:
             if file_type == "json":
@@ -95,7 +95,7 @@ async def main():
         sys.stdout.write(json.dumps(result))
     else:
         if args.merge_file:
-            file_results = read_file(file_path, file_type, result, fieldnames)
+            file_results = read_file(file_path, file_type, fieldnames)
             file_result_map = {
                 row.get(GraffitiLookup.ID_FIELD): row for row in file_results
             }
