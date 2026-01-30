@@ -32,6 +32,10 @@ parser.add_argument(
     "-t", "--file-type", choices=SUPPORTED_FILE_TYPES, help="The output file type"
 )
 
+# Parse empty args at import time so pytest (and other importers) don't consume CLI argv.
+# When executing as a script we parse the real command-line args in the __main__ block.
+args = parser.parse_args([])
+
 
 def read_file(file_path, file_type, fieldnames):
     try:
@@ -70,28 +74,31 @@ def write_file(file_path, file_type, result, fieldnames):
                 csv_writer.writerow(result)
 
 
-async def main():
+async def main(cli_args=None):
+    if cli_args is None:
+        cli_args = args
+
     graffiti_lookup_service = GraffitiLookup()
     result = None
-    file_path = args.file_path
-    file_type = args.file_type or (file_path and file_path.split(".")[-1].lower())
+    file_path = cli_args.file_path
+    file_type = cli_args.file_type or (file_path and file_path.split(".")[-1].lower())
 
-    if args.id:
-        result = await graffiti_lookup_service.get_status_by_id(args.id)
+    if cli_args.id:
+        result = await graffiti_lookup_service.get_status_by_id(cli_args.id)
 
-    if args.ids:
-        service_ids = args.ids.replace(" ", "").split(",")
+    if cli_args.ids:
+        service_ids = cli_args.ids.replace(" ", "").split(",")
         result = await graffiti_lookup_service.get_statuses_by_id(service_ids)
 
     try:
-        fieldnames = result[0].keys() if args.ids else result.keys()
+        fieldnames = result[0].keys() if cli_args.ids else result.keys()
     except (IndexError, AttributeError):
         fieldnames = []
 
     if not file_path:
         sys.stdout.write(json.dumps(result))
     else:
-        if args.merge_file:
+        if cli_args.merge_file:
             file_results = read_file(file_path, file_type, fieldnames)
             file_result_map = {
                 row.get(GraffitiLookup.ID_FIELD): row for row in file_results
@@ -104,5 +111,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    args = parser.parse_args()
-    asyncio.run(main())
+    cli_args = parser.parse_args()
+    asyncio.run(main(cli_args))
