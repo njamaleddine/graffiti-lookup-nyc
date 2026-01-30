@@ -4,7 +4,7 @@ import csv
 import json
 import sys
 
-from graffiti_lookup.main import GraffitiLookup
+from graffiti_lookup.client import GraffitiLookup
 
 
 SUPPORTED_FILE_TYPES = ("csv", "json")
@@ -67,7 +67,7 @@ def write_file(file_path, file_type, result, fieldnames):
         elif file_type == "csv":
             csv_writer = csv.DictWriter(file, fieldnames=fieldnames)
             csv_writer.writeheader()
-            if args.ids:
+            if isinstance(result, list):
                 csv_writer.writerows(result)
             else:
                 csv_writer.writerow(result)

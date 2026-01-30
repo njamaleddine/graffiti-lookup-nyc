@@ -4,7 +4,7 @@ import logging
 from bs4 import BeautifulSoup
 import httpx
 
-from graffiti_lookup.dataclasses import ServiceRequest
+from graffiti_lookup.models import ServiceRequest
 
 
 logger = logging.getLogger(__name__)

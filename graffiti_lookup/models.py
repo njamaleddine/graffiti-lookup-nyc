@@ -6,6 +6,7 @@ from typing import ClassVar
 @dataclass
 class ServiceRequest:
     """Graffiti Service Request"""
+
     service_request: str
     address: str
     created: datetime
