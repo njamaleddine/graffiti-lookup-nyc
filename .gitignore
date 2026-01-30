@@ -16,3 +16,8 @@ __pycache__/
 coverage.xml
 *.csv
 *.json
+.pytest_cache/*
+htmlcov/
+.tox/
+dist/
+build/

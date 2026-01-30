@@ -149,6 +149,25 @@ class TestFileOperations:
         assert result[0]["service_request"] == "G11111"
         assert result[1]["service_request"] == "G22222"
 
+    def test_write_single_record_csv(self):
+        """Test writing a single dict (not list) to CSV"""
+        file_path = self.temp_path / "single.csv"
+        single_record = {
+            "service_request": "G55555",
+            "address": "555 Single St",
+            "created": "2021-01-01",
+            "last_updated": "2021-01-02",
+            "status": "Pending",
+        }
+
+        write_file(str(file_path), "csv", single_record, single_record.keys())
+
+        assert file_path.exists()
+        with open(file_path) as f:
+            content = f.read()
+        assert "service_request" in content
+        assert "G55555" in content
+
 
 class TestMainFunction:
     def setup_method(self):
@@ -394,3 +413,52 @@ class TestMainFunction:
         mock_stdout.write.assert_called_once()
         call_args = mock_stdout.write.call_args[0][0]
         assert json.loads(call_args) == {}
+
+    @patch("graffiti_lookup.__main__.sys.stdout")
+    @patch("graffiti_lookup.__main__.args")
+    @pytest.mark.asyncio
+    async def test_main_no_id_or_ids(self, mock_args, mock_stdout):
+        """Test main when neither id nor ids provided"""
+        from graffiti_lookup.__main__ import main
+
+        mock_args.id = None
+        mock_args.ids = None
+        mock_args.file_path = None
+        mock_args.merge_file = False
+        mock_args.file_type = None
+
+        await main()
+
+        # Should output None as JSON
+        mock_stdout.write.assert_called_once()
+        call_args = mock_stdout.write.call_args[0][0]
+        assert json.loads(call_args) is None
+
+    @patch(
+        "graffiti_lookup.__main__.GraffitiLookup.get_status_by_id",
+        new_callable=AsyncMock,
+    )
+    @patch("graffiti_lookup.__main__.args")
+    @pytest.mark.asyncio
+    async def test_main_single_id_file_type_inferred(self, mock_args, mock_get_status):
+        """Test main infers file type from file path extension"""
+        from graffiti_lookup.__main__ import main
+
+        file_path = self.temp_path / "inferred.csv"
+
+        mock_args.id = "G12345"
+        mock_args.ids = None
+        mock_args.file_path = str(file_path)
+        mock_args.file_type = None  # Should infer from .csv
+        mock_args.merge_file = False
+
+        mock_get_status.return_value = self.single_result
+
+        await main()
+
+        assert file_path.exists()
+        with open(file_path) as f:
+            content = f.read()
+        assert "service_request" in content
+        assert "G12345" in content
+

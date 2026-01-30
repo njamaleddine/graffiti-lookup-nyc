@@ -24,6 +24,32 @@ class TestGraffitiLookup:
             == "last_updated"
         )
 
+    def test_parse_no_outer_table_returns_empty(self):
+        html = "<div><p>No table here</p></div>"
+        result = self.graffiti_lookup._parse_record_from_html(html, "G000")
+        assert result == {}
+
+    def test_parse_no_data_table_returns_empty(self):
+        html = "<div class=\"txtBox\"><p>Missing inner table</p></div>"
+        result = self.graffiti_lookup._parse_record_from_html(html, "G001")
+        assert result == {}
+
+    def test_sanitize_id_lowercase_g_not_stripped(self):
+        assert self.graffiti_lookup._sanitize_id("g123") == "g123"
+
+    def test_parse_rows_with_missing_values(self):
+        html = b"""
+        <div class=\"txtBox\">
+          <table class=\"withBorder\">
+            <tr><td>Service Request</td><td></td></tr>
+            <tr><td>Address</td><td></td></tr>
+          </table>
+        </div>
+        """
+        record = self.graffiti_lookup._parse_record_from_html(html, "G002")
+        assert record.get("service_request") == ""
+        assert record.get("address") == ""
+
     def test_parse_record_from_html(self):
         html = """
         <div class="txtBox">
@@ -154,3 +180,35 @@ class TestGraffitiLookup:
         result = await self.graffiti_lookup.get_statuses_by_id([])
 
         assert result == []
+
+    @patch.object(GraffitiLookup, "_request", new_callable=AsyncMock)
+    @pytest.mark.asyncio
+    async def test_get_status_by_id_no_close_connection(self, mock_request):
+        html_response = b"""
+        <div class="txtBox">
+          <table class="withBorder">
+            <tr><td>Service Request</td><td>12345</td></tr>
+            <tr><td>Address</td><td>789 PINE AVE, BRONX</td></tr>
+            <tr><td>Created</td><td>05/10/2023</td></tr>
+            <tr><td>Last Updated</td><td>06/15/2023</td></tr>
+            <tr><td>Status</td><td>Closed</td></tr>
+          </table>
+        </div>
+        """
+
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = html_response
+
+        mock_request.return_value = mock_response
+        result = await self.graffiti_lookup.get_status_by_id("G12345", close_connection=False)
+
+        expected_result = {
+            "service_request": "12345",
+            "address": "789 PINE AVE, BRONX",
+            "created": "2023-05-10",
+            "last_updated": "2023-06-15",
+            "status": "Closed",
+        }
+
+        assert result == expected_result

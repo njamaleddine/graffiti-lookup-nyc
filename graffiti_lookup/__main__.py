@@ -6,7 +6,6 @@ import sys
 
 from graffiti_lookup.client import GraffitiLookup
 
-
 SUPPORTED_FILE_TYPES = ("csv", "json")
 
 parser = argparse.ArgumentParser(description="Fetch NYC Graffiti Service Request")
@@ -32,8 +31,6 @@ parser.add_argument(
 parser.add_argument(
     "-t", "--file-type", choices=SUPPORTED_FILE_TYPES, help="The output file type"
 )
-
-args = parser.parse_args()
 
 
 def read_file(file_path, file_type, fieldnames):
@@ -107,4 +104,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    args = parser.parse_args()
     asyncio.run(main())
