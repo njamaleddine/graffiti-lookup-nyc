@@ -30,7 +30,7 @@ class TestGraffitiLookup:
         assert result == {}
 
     def test_parse_no_data_table_returns_empty(self):
-        html = "<div class=\"txtBox\"><p>Missing inner table</p></div>"
+        html = '<div class="txtBox"><p>Missing inner table</p></div>'
         result = self.graffiti_lookup._parse_record_from_html(html, "G001")
         assert result == {}
 
@@ -201,7 +201,9 @@ class TestGraffitiLookup:
         mock_response.content = html_response
 
         mock_request.return_value = mock_response
-        result = await self.graffiti_lookup.get_status_by_id("G12345", close_connection=False)
+        result = await self.graffiti_lookup.get_status_by_id(
+            "G12345", close_connection=False
+        )
 
         expected_result = {
             "service_request": "12345",

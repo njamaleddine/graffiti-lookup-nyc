@@ -461,4 +461,3 @@ class TestMainFunction:
             content = f.read()
         assert "service_request" in content
         assert "G12345" in content
-
