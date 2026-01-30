@@ -3,7 +3,7 @@
 *.pid
 *.pot
 *.pyc
-.env
+.env*
 venv/
 .DS_Store
 __pycache__/
