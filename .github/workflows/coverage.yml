@@ -19,10 +19,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements-dev.txt
-        pip install pytest-cov
     - name: Run coverage
       run: |
-        pytest --cov=graffiti_lookup --cov-report=xml
+        pytest --cov=graffiti_lookup --cov-report=xml --cov-report=term --cov-fail-under=80
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
