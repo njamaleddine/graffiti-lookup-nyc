@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="graffiti-lookup-nyc",
-    version="1.0.1",
+    version="1.0.2",
     description="Query NYC 311 Graffiti Cleanup Requests via CLI and Python API.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
