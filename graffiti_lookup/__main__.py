@@ -1,5 +1,4 @@
 import argparse
-import asyncio
 import csv
 import json
 import sys
@@ -110,6 +109,12 @@ async def main(cli_args=None):
         write_file(file_path, file_type, result, fieldnames)
 
 
-if __name__ == "__main__":
+def cli_main():
+    import asyncio
+
     cli_args = parser.parse_args()
     asyncio.run(main(cli_args))
+
+
+if __name__ == "__main__":
+    cli_main()

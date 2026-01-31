@@ -17,7 +17,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "graffiti-lookup-nyc=graffiti_lookup.__main__:main"
+            "graffiti-lookup-nyc=graffiti_lookup.__main__:cli_main"
         ]
     },
     classifiers=[
