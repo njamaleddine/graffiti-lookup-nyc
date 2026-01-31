@@ -1,3 +1,20 @@
+# PyPI Packaging
+
+## Publishing to PyPI
+
+1. Ensure you have the latest build tools:
+  ```sh
+  pip install -r requirements-dev.txt
+  ```
+2. Build the package:
+  ```sh
+  python -m build
+  ```
+3. Upload to PyPI:
+  ```sh
+  twine upload dist/*
+  ```
+
 # Graffiti Lookup NYC
 
 This project provides a Python Class and CLI for looking up NYC 311 Graffiti Cleanup Requests.
