@@ -4,6 +4,8 @@ import logging
 from bs4 import BeautifulSoup
 import httpx
 
+from graffiti_lookup import __version__ as VERSION
+from graffiti_lookup.models import ServiceRequest
 from graffiti_lookup.models import ServiceRequest
 
 logger = logging.getLogger(__name__)
@@ -16,9 +18,15 @@ class GraffitiLookup:
         "https://a002-oomwap.nyc.gov/TagOnline/Shared/CannotRespond?sr="
     )
     ID_FIELD = ServiceRequest.ID_FIELD
+    USER_AGENT = f"graffiti-lookup-nyc/{VERSION}"
 
-    def __init__(self):
-        self.client = httpx.AsyncClient()
+    def __init__(self, timeout=10, headers=None):
+        self._timeout = timeout
+        self._headers = headers or {}
+        self.client = httpx.AsyncClient(
+            timeout=self._timeout,
+            headers={**self._headers, "User-Agent": self.USER_AGENT},
+        )
 
     @staticmethod
     def _convert_to_snake_case(text=""):

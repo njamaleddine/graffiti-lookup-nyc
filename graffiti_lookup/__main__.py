@@ -17,6 +17,13 @@ parser.add_argument(
     "-L", "--ids", help="Comma separated list of graffiti service request ids"
 )
 parser.add_argument(
+    "-T",
+    "--timeout",
+    type=int,
+    default=10,
+    help="Timeout for HTTP requests in seconds (default: 10)",
+)
+parser.add_argument(
     "-f",
     "--file-path",
     help="The output file path for the requested graffiti service request records",
@@ -77,7 +84,7 @@ async def main(cli_args=None):
     if cli_args is None:
         cli_args = args
 
-    graffiti_lookup_service = GraffitiLookup()
+    graffiti_lookup_service = GraffitiLookup(timeout=cli_args.timeout)
     result = None
     file_path = cli_args.file_path
     file_type = cli_args.file_type or (file_path and file_path.split(".")[-1].lower())
