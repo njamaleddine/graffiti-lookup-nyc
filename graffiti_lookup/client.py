@@ -6,7 +6,6 @@ import httpx
 
 from graffiti_lookup import __version__ as VERSION
 from graffiti_lookup.models import ServiceRequest
-from graffiti_lookup.models import ServiceRequest
 
 logger = logging.getLogger(__name__)
 
