@@ -24,6 +24,20 @@ parser.add_argument(
     help="Timeout for HTTP requests in seconds (default: 10)",
 )
 parser.add_argument(
+    "-M",
+    "--max-connections",
+    type=int,
+    default=10,
+    help="Maximum concurrent HTTP connections (default: 10)",
+)
+parser.add_argument(
+    "-K",
+    "--max-keepalive-connections",
+    type=int,
+    default=5,
+    help="Maximum keep-alive HTTP connections (default: 5)",
+)
+parser.add_argument(
     "-f",
     "--file-path",
     help="The output file path for the requested graffiti service request records",
@@ -84,7 +98,11 @@ async def main(cli_args=None):
     if cli_args is None:
         cli_args = args
 
-    graffiti_lookup_service = GraffitiLookup(timeout=cli_args.timeout)
+    graffiti_lookup_service = GraffitiLookup(
+        timeout=cli_args.timeout,
+        max_connections=cli_args.max_connections,
+        max_keepalive_connections=cli_args.max_keepalive_connections,
+    )
     result = None
     file_path = cli_args.file_path
     file_type = cli_args.file_type or (file_path and file_path.split(".")[-1].lower())

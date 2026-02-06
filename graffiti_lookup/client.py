@@ -19,12 +19,18 @@ class GraffitiLookup:
     ID_FIELD = ServiceRequest.ID_FIELD
     USER_AGENT = f"graffiti-lookup-nyc/{VERSION}"
 
-    def __init__(self, timeout=10, headers=None):
+    def __init__(
+        self, timeout=10, headers=None, max_connections=10, max_keepalive_connections=5
+    ):
         self._timeout = timeout
         self._headers = headers or {}
         self.client = httpx.AsyncClient(
             timeout=self._timeout,
             headers={**self._headers, "User-Agent": self.USER_AGENT},
+            limits=httpx.Limits(
+                max_connections=max_connections,
+                max_keepalive_connections=max_keepalive_connections,
+            ),
         )
 
     @staticmethod
