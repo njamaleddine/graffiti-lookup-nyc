@@ -216,6 +216,8 @@ class TestMainFunction:
         mock_args.file_path = None
         mock_args.merge_file = False
         mock_args.file_type = None
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_status.return_value = self.single_result
 
@@ -241,6 +243,8 @@ class TestMainFunction:
         mock_args.file_path = str(file_path)
         mock_args.file_type = "json"
         mock_args.merge_file = False
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_statuses.return_value = self.multiple_results
 
@@ -269,6 +273,8 @@ class TestMainFunction:
         mock_args.file_path = str(file_path)
         mock_args.file_type = "json"
         mock_args.merge_file = False
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_status.return_value = self.single_result
 
@@ -295,6 +301,8 @@ class TestMainFunction:
         mock_args.file_path = str(file_path)
         mock_args.file_type = "csv"
         mock_args.merge_file = False
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_status.return_value = self.single_result
 
@@ -335,6 +343,8 @@ class TestMainFunction:
         mock_args.file_path = str(file_path)
         mock_args.file_type = "json"
         mock_args.merge_file = True
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_statuses.return_value = self.multiple_results
 
@@ -377,6 +387,8 @@ class TestMainFunction:
         mock_args.file_path = str(file_path)
         mock_args.file_type = "json"
         mock_args.merge_file = True
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_statuses.return_value = self.multiple_results
 
@@ -405,6 +417,8 @@ class TestMainFunction:
         mock_args.file_path = None
         mock_args.merge_file = False
         mock_args.file_type = None
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_status.return_value = {}
 
@@ -426,6 +440,8 @@ class TestMainFunction:
         mock_args.file_path = None
         mock_args.merge_file = False
         mock_args.file_type = None
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         await main()
 
@@ -451,6 +467,8 @@ class TestMainFunction:
         mock_args.file_path = str(file_path)
         mock_args.file_type = None  # Should infer from .csv
         mock_args.merge_file = False
+        mock_args.max_connections = 10
+        mock_args.max_keepalive_connections = 5
 
         mock_get_status.return_value = self.single_result
 
